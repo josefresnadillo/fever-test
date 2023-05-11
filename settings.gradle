@@ -1,0 +1,17 @@
+rootProject.name = 'fever'
+
+// Libraries
+file('libs').eachDir { dir ->
+  include ":${dir.name}"
+  project(":${dir.name}").projectDir = dir
+}
+
+file('services').eachDir { dir ->
+  include ":${dir.name}"
+  project(":${dir.name}").projectDir = dir
+}
+
+
+
+
+

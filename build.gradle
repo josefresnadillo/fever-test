@@ -1,0 +1,13 @@
+plugins {
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    version = 'HEAD'
+}

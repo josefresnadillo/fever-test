@@ -1,0 +1,31 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+  }
+}
+
+plugins {
+  id "io.swagger.core.v3.swagger-gradle-plugin" version "2.0.8"
+}
+
+dependencies {
+
+  implementation project(':exceptions')
+
+  // Vertx
+  implementation "io.vertx:vertx-redis-client:4.3.1"
+  implementation "io.vertx:vertx-rx-java2:4.3.1"
+
+  // Other
+  implementation "org.apache.commons:commons-lang3:3.9"
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0'
+
+  testImplementation "junit:junit:4.12"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:5.6.2"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
+}
+

@@ -1,0 +1,6 @@
+{
+  "dateLibrary": "java8",
+  "useBeanValidation": "true",
+  "sourceFolder" : "src/main/java",
+  "hideGenerationTimestamp" : true
+}

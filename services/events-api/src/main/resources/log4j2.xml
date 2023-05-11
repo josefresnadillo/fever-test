@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" packages="com.fever.events" name="log4j-custom-layout">
+  <Appenders>
+    <Console name="console" immediateFlush="false" bufferSize="5621449">
+      <cloudJsonLayout/>
+    </Console>
+
+    <Async name="Async">
+      <AppenderRef ref="console"/>
+    </Async>
+  </Appenders>
+
+  <Loggers>
+    <Root level="${env:LOG_LEVEL:-INFO}">
+      <AppenderRef ref="Async"/>
+    </Root>
+  </Loggers>
+
+</Configuration>

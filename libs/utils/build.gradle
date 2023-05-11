@@ -1,0 +1,40 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+  }
+}
+
+plugins {
+  id "io.swagger.core.v3.swagger-gradle-plugin" version "2.0.8"
+  id "org.openapi.generator" version "4.3.1"
+}
+
+
+dependencies {
+
+  implementation "org.apache.commons:commons-lang3:3.9"
+  implementation "commons-validator:commons-validator:1.6"
+  implementation "org.apache.httpcomponents:httpclient:4.5.11"
+
+  implementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0'
+  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.1'
+
+  implementation "org.iban4j:iban4j:3.2.1"
+
+  testImplementation "junit:junit:4.12"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:5.6.2"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
+
+
+  testImplementation "org.mockito:mockito-core:2.23.4"
+
+}
+
+test {
+  useJUnitPlatform()
+}

@@ -1,0 +1,138 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+    }
+}
+
+plugins {
+    id "org.openapi.generator" version "6.4.0"
+    id "de.undercouch.download" version "4.1.1"
+    id("com.github.johnrengelman.shadow") version "6.0.0"
+}
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "com.fever.events.Main"
+}
+
+apply plugin : "java"
+ext {
+    javaMainClass = "com.fever.events.Main"
+}
+
+task runWithJavaExec(type: JavaExec) {
+    group = "Execution"
+    description = "Run the main class with JavaExecTask"
+    classpath = sourceSets.main.runtimeClasspath
+    main = javaMainClass
+}
+
+dependencies {
+
+
+    implementation project(':rest-client')
+    implementation project(':rest-handler')
+    implementation project(':utils')
+    implementation project(':cache')
+    implementation project(':events-provider-client')
+    implementation project(':events-mongo-client')
+    implementation project(':exceptions')
+
+    implementation("org.json:json") {
+        version {
+            strictly '20201115'
+        }
+    }
+
+    // Vertx
+    implementation('io.vertx:vertx-core') {
+        version {
+            strictly '4.3.1'
+        }
+    }
+    implementation "io.vertx:vertx-rx-java2:4.3.1"
+    implementation "io.vertx:vertx-web:4.3.1"
+    implementation "io.vertx:vertx-micrometer-metrics:4.3.1"
+    implementation "io.vertx:vertx-web-client:4.3.1"
+    implementation "io.vertx:vertx-config-yaml:4.3.1"
+    implementation "io.vertx:vertx-config:4.3.1"
+
+    // Validators
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    implementation group: 'commons-validator', name: 'commons-validator', version: '1.7'
+    implementation "org.hibernate.validator:hibernate-validator:6.0.13.Final"
+    implementation "javax.validation:validation-api:2.0.1.Final"
+
+    implementation "redis.clients:jedis:4.1.1"
+    implementation "javax.el:javax.el-api:3.0.0"
+    implementation "org.glassfish:javax.el:3.0.0"
+
+    // Jackson
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
+
+    // Micrometer
+    implementation "io.micrometer:micrometer-registry-prometheus:1.8.2"
+
+    // MongoDB
+    implementation 'io.vertx:vertx-mongo-client:4.4.1'
+
+    //Swagger
+    implementation "io.swagger:swagger-annotations:1.5.0"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.4"
+    implementation "javax.annotation:javax.annotation-api:1.2"
+
+    // Dagger
+    implementation "com.google.dagger:dagger-compiler:2.25.2"
+    implementation "com.google.dagger:dagger:2.25.2"
+    implementation "com.google.dagger:dagger-compiler:2.25.2"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.25.2"
+
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+
+    // Bucket4j
+    implementation group: 'com.github.vladimir-bukhtoyarov', name: 'bucket4j-core', version: '7.3.0'
+    implementation group: 'com.github.vladimir-bukhtoyarov', name: 'bucket4j-redis', version: '7.3.0'
+    implementation group: 'com.github.vladimir-bukhtoyarov', name: 'bucket4j-jcache', version: '7.3.0'
+    implementation 'javax.cache:cache-api:1.0.0'
+    implementation 'org.redisson:redisson:3.11.5'
+
+    // Test
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.6.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
+    testImplementation "org.mockito:mockito-core:2.23.4"
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task downloadFile(type: Download) {
+    src "https://api.swaggerhub.com/apis/luis-pintado-feverup/backend-test/1.0.0"
+    dest "$projectDir/src/main/resources/swagger.yaml".toString()
+    onlyIfModified false
+    useETag false
+}
+
+
+openApiGenerate {
+    generatorName = "jaxrs-jersey" // Compiles to java flavour
+    inputSpec = "$projectDir/src/main/resources/swagger.yaml".toString()
+    auth = "Authorization: a81d8efd-84d9-4210-b588-8d3f2f5abfae"
+    outputDir = "$rootDir/services/events-api".toString()
+    invokerPackage = "com.fever.events.primary.api"
+    modelPackage = "com.fever.events.primary.api"
+    generateModelTests = false // Avoid generating tests for models
+    globalProperties = [models: "", modelDocs: "false"] // Only generate models
+    configOptions = [dateLibrary            : "java8",
+                     useBeanValidation      : "true",
+                     sourceFolder           : "src/main/java",
+                     hideGenerationTimestamp: "true"] // Dates in java8 format needs vertx to use Jackson
+}
+
+tasks.openApiGenerate.dependsOn tasks.downloadFile
+
